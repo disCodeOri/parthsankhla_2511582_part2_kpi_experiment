@@ -24,6 +24,8 @@ The KPI tree in `outputs/kpi_tree.png` connects paid conversion rate to acquisit
 - Compared segment distribution across region, device type, traffic source, and plan type.
 - Compared Control vs Treatment for the required summary metrics.
 
+Data quality handling: 56 rows had missing required values, 16 duplicate user ID rows were found, and 4 revenue outliers were flagged. I kept the outliers in the main business read because they are real revenue observations, but treated them as a review item. Missing `days_to_convert` is expected for users who did not convert.
+
 ## Hypothesis Test Summary
 - Test: one-tailed two-proportion z-test.
 - Metric: paid conversion rate.
@@ -33,15 +35,20 @@ The KPI tree in `outputs/kpi_tree.png` connects paid conversion rate to acquisit
 - P-value: 0.0006
 - Statistical readout: Reject the null hypothesis.
 
+The test is one-tailed because the launch decision is directional: Treatment should be rolled out only if it improves paid conversion.
+
 ## Guardrail Metrics Considered
 - Refund rate: 0.0% Control vs 0.4% Treatment
 - Support ticket rate: 14.7% Control vs 24.8% Treatment
 - Engagement score: 57.0 Control vs 62.9 Treatment
 - Average days to convert: 8.9 Control vs 6.4 Treatment
 - ARPU: $51.75 Control vs $53.88 Treatment
+- Revenue per converted user: about $1,630 Control vs about $770 Treatment
 
 ## Final Recommendation
-Launch only for selected segment. Treatment wins on paid conversion, but support ticket rate is much higher and some segments are weaker. That makes a selective launch more sensible than a blanket rollout.
+Run a phased launch, not a blanket rollout. Prioritize segments with clear positive lift, including Referral, Free plan, North, Tablet/Mobile, Paid Search, Email, and Organic. Hold out or re-test Social traffic because it shows negative lift. Treat Basic plan as inconclusive because the lift is nearly flat.
+
+The tradeoff is important: Treatment improves conversion, but converted users bring in less revenue on average and support tickets rise from 14.7% to 24.8%. Do not scale without support capacity, onboarding FAQ fixes, and weekly ticket monitoring.
 
 ## Assumptions and Limitations
 - Revenue outliers were flagged for review but retained in the main business summary.
